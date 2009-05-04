@@ -4,6 +4,8 @@ require 'query_string'
 class Evoke
   class ConnectionRefused < Exception; end
 
+  # Configuration
+
   def self.host; @host || 'evoke.thumblemonks.com'; end
   def self.host=(host) @host = host; end
 
@@ -13,6 +15,8 @@ class Evoke
   def self.host_and_port
     [host, port].compact.join(':')
   end
+
+  # Logic
 
   def self.create_or_update!(*args)
     Evoke.new(*args).save
