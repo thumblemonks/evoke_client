@@ -27,7 +27,7 @@ To modify host and port, just set the following:
 
 These should be automatically installed when you install evoke_client
 
-* rest-client
+* [rest-client](http://github.com/adamwiggins/rest-client)
 
 ## License
 

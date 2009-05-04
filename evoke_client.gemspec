@@ -13,6 +13,8 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.markdown"]
   s.extra_rdoc_files = ["README.markdown"]
 
+  s.add_dependency("rest-client", [">= 0.9.2"])
+
   # run git ls-files to get an updated list
   s.files = %w[
     MIT-LICENSE
