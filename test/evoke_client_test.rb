@@ -63,4 +63,21 @@ class EvokeTest < Test::Unit::TestCase
     end
   end
 
+  context "host and port:" do
+    should("return default host") { assert_equal 'evoke.thumblemonks.com', Evoke.host }
+    should("return default port") { assert_nil Evoke.port }
+    should("return default host and port") { assert_equal 'evoke.thumblemonks.com', Evoke.host_and_port }
+
+    context "when changed" do
+      setup do
+        Evoke.host = 'example.com'
+        Evoke.port = 4567
+      end
+
+      should("return specified host") { assert_equal 'example.com', Evoke.host }
+      should("return specified port") { assert_equal 4567, Evoke.port }
+      should("return specified host and port") { assert_equal 'example.com:4567', Evoke.host_and_port }
+    end
+  end
+
 end
