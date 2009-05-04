@@ -23,6 +23,12 @@ To modify host and port, just set the following:
 
     gem install thumblemonks-evoke_client
 
+#### Dependencies
+
+These should be automatically installed when you install evoke_client
+
+* rest-client
+
 ## License
 
 MIT, baby! (see file named MIT-LICENSE)
