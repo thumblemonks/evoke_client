@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "evoke_client"
-  s.version  = "0.1.1"
+  s.version  = "0.1.2"
   s.date     = "2009-05-03"
   s.summary  = "Rest client interface for talking REST to the evoke service"
   s.email    = %w[gus@gusg.us]
