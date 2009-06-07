@@ -5,6 +5,10 @@ class EvokeTest < Test::Unit::TestCase
     @params = {:url => 'foo', :callback_at => Time.now}
   end
 
+  def teardown
+    Evoke.test = false
+  end
+
   context "initializing a new evokation" do
     setup do
       @data = {:foo => 'bar', 'goo' => 'car'}
@@ -51,7 +55,7 @@ class EvokeTest < Test::Unit::TestCase
 
   context "connection refused" do
     setup do
-      RestClient::Resource.any_instance.expects(:get).raises(Errno::ECONNREFUSED)
+      expect_restful_request_failure(:get, Errno::ECONNREFUSED)
     end
 
     should "reraise Evoke::ConnectionRefused when saving" do
@@ -83,6 +87,20 @@ class EvokeTest < Test::Unit::TestCase
       should("return specified host") { assert_equal 'example.com', Evoke.host }
       should("return specified port") { assert_equal 4567, Evoke.port }
       should("return specified host and port") { assert_equal 'example.com:4567', Evoke.host_and_port }
+    end
+  end
+
+  context "when test mode is on" do
+    setup do
+      Evoke.test = true
+      @evoke = Evoke.new({})
+      expect_restful_request(:get).never
+      expect_restful_request(:post).never
+      expect_restful_request(:put).never
+    end
+
+    should "never call out to Evoke service" do
+      @evoke.save
     end
   end
 

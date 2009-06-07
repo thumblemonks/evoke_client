@@ -6,6 +6,9 @@ class Evoke
 
   # Configuration
 
+  def self.test?; @test == true; end
+  def self.test=(setting) @test = setting; end
+
   def self.host; @host || 'evoke.thumblemonks.com'; end
   def self.host=(host) @host = host; end
 
@@ -32,11 +35,13 @@ class Evoke
   end
 
   def save
-    @evoke[params[:guid]].get
-    @evoke[params[:guid]].put(@params)
-  rescue RestClient::ResourceNotFound
-    @evoke.post(@params)
-  rescue Errno::ECONNREFUSED
-    raise ConnectionRefused, "Connection refused while connecting to #{Evoke.host_and_port}"
+    begin
+      @evoke[params[:guid]].get
+      @evoke[params[:guid]].put(@params)
+    rescue RestClient::ResourceNotFound
+      @evoke.post(@params)
+    rescue Errno::ECONNREFUSED
+      raise ConnectionRefused, "Connection refused while connecting to #{Evoke.host_and_port}"
+    end unless Evoke.test?
   end
 end

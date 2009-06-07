@@ -1,7 +1,6 @@
 module EvokeClient
   module RestClient
     module Shoulda
-
       def expect_restful_request(method, *args)
         ::RestClient::Resource.any_instance.expects(method).with(*args)
       end
