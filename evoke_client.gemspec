@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.name     = "evoke_client"
-  s.version  = "0.1.3"
-  s.date     = "2009-06-06"
+  s.version  = "0.2.0"
+  s.date     = "2009-06-07"
   s.summary  = "Rest client interface for talking REST to the evoke service"
   s.email    = %w[gus@gusg.us]
   s.homepage = "http://github.com/thumblemonks/evoke_client"
   s.description = "Rest client interface for talking REST to the evoke service"
   s.authors  = %w[Justin\ Knowlden]
-  s.post_install_message = %q{Choosy architectonics choose Thumble Monks.}
+  s.post_install_message = %q{Choosy wizards choose Thumble Monks.}
 
   s.has_rdoc = false
   s.rdoc_options = ["--main", "README.markdown"]
@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
     Rakefile
     evoke_client.gemspec
     lib/evoke_client.rb
+    lib/evoke_client/base.rb
+    lib/evoke_client/stub.rb
     lib/query_string.rb
     shoulda_macros/rest_client.rb
   ]

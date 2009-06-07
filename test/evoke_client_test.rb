@@ -9,11 +9,11 @@ class EvokeTest < Test::Unit::TestCase
     Evoke.test = false
   end
 
-  context "initializing a new evokation" do
+  context "preparing an evokation" do
     setup do
       @data = {:foo => 'bar', 'goo' => 'car'}
       @expected_data = "foo=bar&goo=car"
-      @evoke = Evoke.new(@params.merge(:data => @data))
+      @evoke = Evoke.prepare(@params.merge(:data => @data))
     end
     
     before_should("convert times to UTC") { Time.any_instance.expects(:utc) }
@@ -29,7 +29,7 @@ class EvokeTest < Test::Unit::TestCase
       setup do
         expect_restful_request_failure(:get, ::RestClient::ResourceNotFound)
         expect_restful_request(:post, @params)
-        @evoke = Evoke.new(@params)
+        @evoke = Evoke.prepare(@params)
       end
       should("try and post params after not finding a resource") { @evoke.save }
     end
@@ -38,7 +38,7 @@ class EvokeTest < Test::Unit::TestCase
       setup do
         expect_restful_request(:get)
         expect_restful_request(:put, @params)
-        @evoke = Evoke.new(@params)
+        @evoke = Evoke.prepare(@params)
       end
       should("try and put params after finding a resource") { @evoke.save }
     end
@@ -46,8 +46,8 @@ class EvokeTest < Test::Unit::TestCase
 
   context "create_or_update!" do
     should "initialize instance and call save" do
-      fake_evoke = Evoke.new({})
-      Evoke.expects(:new).with(@params).returns(fake_evoke)
+      fake_evoke = EvokeClient::Base.new
+      EvokeClient::Base.expects(:new).with(@params).returns(fake_evoke)
       fake_evoke.expects(:save)
       Evoke.create_or_update!(@params)
     end
@@ -59,7 +59,7 @@ class EvokeTest < Test::Unit::TestCase
     end
 
     should "reraise Evoke::ConnectionRefused when saving" do
-      assert_raise(Evoke::ConnectionRefused) { Evoke.new({}).save }
+      assert_raise(Evoke::ConnectionRefused) { Evoke.prepare({}).save }
     end
     
     should "reraise Evoke::ConnectionRefused when storing" do
@@ -93,14 +93,11 @@ class EvokeTest < Test::Unit::TestCase
   context "when test mode is on" do
     setup do
       Evoke.test = true
-      @evoke = Evoke.new({})
-      expect_restful_request(:get).never
-      expect_restful_request(:post).never
-      expect_restful_request(:put).never
+      @evoke = Evoke.prepare({})
     end
 
-    should "never call out to Evoke service" do
-      @evoke.save
+    should "expect an EvokeClient::Stub class" do
+      assert_kind_of EvokeClient::Stub, @evoke
     end
   end
 
