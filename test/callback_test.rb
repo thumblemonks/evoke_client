@@ -18,16 +18,18 @@ end # configuring evoke client
 
 context "finding a callback" do
   setup do
-    callback_data = {"url" => "http://foo.bar", "http_method" => "get"}
-    Evoke::Callback.stubs(:get).with('/callbacks/a1b2c3').returns(callback_data)
-    Evoke::Callback.stubs(:get).with('/callbacks/blah').returns("")
+    good_data = {"url" => "http://foo.bar", "http_method" => "get"}
+    good_response = HTTParty::Response.new(good_data, "", 200, "Ok")
+    Evoke::Callback.stubs(:get).with('/callbacks/a1b2c3').returns(good_response)
+    not_found_response = HTTParty::Response.new("", "", 404, "Not Found")
+    Evoke::Callback.stubs(:get).with('/callbacks/blah').returns(not_found_response)
   end
 
   context "that exists" do
     setup { Evoke::Callback.find('a1b2c3') }
     should("return a Callback object") { topic }.kind_of(Evoke::Callback)
     asserts("url attribute is accessible as method") { topic.url }.equals("http://foo.bar")
-    asserts("htt_method attribute is accessible as method") { topic.http_method }.equals("get")
+    asserts("http_method attribute is accessible as method") { topic.http_method }.equals("get")
   end
 
   context "that does not exist" do
@@ -37,6 +39,36 @@ context "finding a callback" do
 end # finding a callback
 
 context "creating a callback" do
+  setup do
+    good_response = HTTParty::Response.new({"url" => "http://foo.bar"}, "", 201, "Created")
+    Evoke::Callback.stubs(:post).with('/callbacks', {"url" => "http://good"}).returns(good_response)
+    bad_response = HTTParty::Response.new({"errors" => ["blah"]}, "", 422, "Unprocessable Entity")
+    Evoke::Callback.stubs(:post).with('/callbacks', {"url" => "http://bad"}).returns(bad_response)
+  end
+
+  context "with valid data" do
+    setup do
+      callback = Evoke::Callback.new("url" => "http://good")
+      callback.save
+      callback
+    end
+
+    asserts("url is populated from returned values") { topic.url }.equals("http://foo.bar")
+  end # with valid data
+
+  context "with invalid data" do
+    setup { Evoke::Callback.new("url" => "http://bad") }
+
+    should("raise and error") { topic.save }.raises(Evoke::RecordInvalid)
+
+    should "include save errors in exception message" do
+      begin
+        topic.save
+      rescue Evoke::RecordInvalid => e
+        e.message # This should be returned
+      end
+    end.equals(["blah"])
+  end # with valid data
 end # creating a callback
 
 context "updating a callback" do

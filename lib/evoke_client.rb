@@ -4,6 +4,8 @@ require 'httparty'
 # require 'evoke_client/stub'
 
 module Evoke
+  class RecordInvalid < Exception; end
+
   def self.configure(base_uri)
     Evoke::Callback.base_uri(base_uri)
   end
@@ -20,6 +22,12 @@ module Evoke
 
     def initialize(data)
       @data = data
+    end
+
+    def save
+      response = self.class.post("/callbacks", @data)
+      raise(Evoke::RecordInvalid, response["errors"]) if response.code == 422
+      @data = response
     end
 
     def method_missing(method, *args, &block)
