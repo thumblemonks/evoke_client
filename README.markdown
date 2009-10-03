@@ -4,8 +4,16 @@ evoke-client is a simple rest-client utility for allowing your application to co
 
 ### Usage
 
-    evoke = Evoke.new(:url => 'http://example.com/users/unsubscribe', :callback_at => (Time.now + 86400))
-    evoke.save
+    # evoke = Evoke.new(:url => 'http://example.com/users/unsubscribe', :callback_at => (Time.now + 86400))
+    # evoke.save
+
+    Evoke.configure(...)
+    callback = Evoke::Callback.new(:url => 'http://example.com/users/unsubscribe', :callback_at => (Time.now + 86400))
+    callback.save
+    
+    callback = Evoke::Callback.find(guid)
+    callback.destroy
+    callback.update
     
     # What happens if save fails
 
