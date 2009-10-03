@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rake'
-# require 'rake/testtask'
 
 desc 'Default task: run all tests'
 task :default => [:test]
@@ -12,11 +11,6 @@ task :test do
   Dir.glob("./test/*_test.rb").each { |test| require test }
   Protest.report
 end
-# task :test => [:set_test_env]
-# Rake::TestTask.new do |t|
-#   t.test_files = FileList['test/*_test.rb']
-#   t.verbose = true
-# end
 
 desc "Open an irb session preloaded with this library"
 task :console do

@@ -4,7 +4,7 @@ context "configuring evoke client" do
   context "with defaults" do
     asserts "base_uri" do
       Evoke::Callback.default_options[:base_uri]
-    end.equals("http://evoke.thumblemonks.com")
+    end.equals("http://localhost:3000")
 
     asserts("format") { Evoke::Callback.default_options[:format] }.equals(:json)
   end # with defaults

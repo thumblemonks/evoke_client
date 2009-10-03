@@ -4,7 +4,5 @@ require 'protest'
 
 require 'evoke_client'
 
-# Evoke.host = 'localhost'
-# Evoke.port = 4567
-
-Protest::Situation.instance_eval { include Mocha::Standalone }
+# If we need methods like #stub, #anything, etc. uncomment the below line
+# Protest::Situation.instance_eval { include Mocha::Standalone }
