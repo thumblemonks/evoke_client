@@ -38,6 +38,7 @@ context "finding a callback" do
     should("return a Callback object") { topic }.kind_of(Evoke::Callback)
     asserts("url attribute is accessible as method") { topic.url }.equals("http://foo.bar")
     asserts("http_method attribute is accessible as method") { topic.http_method }.equals("get")
+    should("not be a new record") { !topic.new_record? }
   end
 
   context "that does not exist" do

@@ -16,7 +16,7 @@ module Evoke
 
     def self.find(guid)
       callback = get("/callbacks/#{guid}")
-      callback.empty? ? nil : new(callback)
+      callback.empty? ? nil : new(callback.merge(:new_record => false))
     end
 
     def initialize(data)
