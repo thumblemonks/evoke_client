@@ -41,9 +41,10 @@ module Evoke
   private
     def handle_response(response, &block)
       case response.code
-        when 404; raise(Evoke::RecordNotFound)
-        when 422; raise(Evoke::RecordInvalid, response["errors"])
-        else yield(response)
+        when 404 then raise(Evoke::RecordNotFound)
+        when 422 then raise(Evoke::RecordInvalid, response["errors"])
+        when 200..201 then yield(response)
+        else raise(Evoke::RecordError, "#{response.code} - #{response.message}")
       end
     end
     

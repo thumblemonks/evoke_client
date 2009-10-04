@@ -55,8 +55,10 @@ context "creating a callback" do
   setup do
     good_response = HTTParty::Response.new({"url" => "http://foo.bar"}, "", 201, "Created")
     bad_response = HTTParty::Response.new({"errors" => ["blah"]}, "", 422, "Unprocessable Entity")
+    unknown_response = HTTParty::Response.new("", "", 500, "Internal Server Error")
     Evoke::Callback.stubs(:post).with('/callbacks', {"url" => "http://good"}).returns(good_response)
     Evoke::Callback.stubs(:post).with('/callbacks', {"url" => "http://bad"}).returns(bad_response)
+    Evoke::Callback.stubs(:post).with('/callbacks', {"url" => "http://unknown"}).returns(unknown_response)
   end
 
   context "with valid data" do
@@ -81,6 +83,20 @@ context "creating a callback" do
         e.message # This should be returned
       end
     end.equals(["blah"])
+  end # with valid data
+
+  context "with some unknown error code" do
+    setup { Evoke::Callback.new("url" => "http://unknown") }
+
+    should("raise and error") { topic.save }.raises(Evoke::RecordError)
+
+    should "include response code and message as exception message" do
+      begin
+        topic.save
+      rescue Evoke::RecordError => e
+        e.message # This should be returned
+      end
+    end.equals("500 - Internal Server Error")
   end # with valid data
 end # creating a callback
 
