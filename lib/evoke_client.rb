@@ -20,11 +20,15 @@ module Evoke
     end
 
     def initialize(data)
+      @new_record = determine_if_new_record(data.delete(:new_record))
       @data = data
     end
 
+    def new_record?; @new_record; end
+
     def save
-      handle_response(self.class.post("/callbacks", @data)) { |response| @data = response }
+      args = new_record? ? [:post, "/callbacks", @data] : [:put, "/callbacks/#{guid}", @data]
+      handle_response(self.class.send(*args)) { |response| @data = response }
     end
 
     def destroy
@@ -41,6 +45,10 @@ module Evoke
         when 422; raise(Evoke::RecordInvalid, response["errors"])
         else yield(response)
       end
+    end
+    
+    def determine_if_new_record(condition)
+      condition.nil? || condition
     end
   end # Callback
 end # Evoke

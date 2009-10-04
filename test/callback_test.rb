@@ -1,5 +1,9 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+#
+# Configure
+#
+
 context "configuring evoke client" do
   context "with defaults" do
     asserts "base_uri" do
@@ -15,6 +19,10 @@ context "configuring evoke client" do
     asserts("base_uri") { Evoke::Callback.default_options[:base_uri] }.equals("http://yo.ma.ma:3000")
   end
 end # configuring evoke client
+
+#
+# Find
+#
 
 context "finding a callback" do
   setup do
@@ -37,6 +45,10 @@ context "finding a callback" do
     asserts("result") { topic }.nil
   end
 end # finding a callback
+
+#
+# Create
+#
 
 context "creating a callback" do
   setup do
@@ -71,8 +83,58 @@ context "creating a callback" do
   end # with valid data
 end # creating a callback
 
+#
+# Update
+#
+
 context "updating a callback" do
+  setup do
+    good_response = HTTParty::Response.new({"url" => "http://foo.bar"}, "", 200, "Ok")
+    bad_response = HTTParty::Response.new({"errors" => ["mutha"]}, "", 422, "Unprocessable Entity")
+    not_found_response = HTTParty::Response.new("", "", 404, "Not Found")
+    Evoke::Callback.stubs(:put).with('/callbacks/good', anything).returns(good_response)
+    Evoke::Callback.stubs(:put).with('/callbacks/bad', anything).returns(bad_response)
+    Evoke::Callback.stubs(:put).with('/callbacks/what', anything).returns(not_found_response)
+  end
+
+  context "that actually exists" do
+    setup do
+      callback = Evoke::Callback.new("guid" => "good", "url" => "http://a.b", :new_record => false)
+      callback.save
+      callback
+    end
+    
+    asserts("url is updated from results") { topic.url }.equals("http://foo.bar")
+  end # that actually exists
+
+  context "that causes some failure" do
+    setup do
+      callback = Evoke::Callback.new("guid" => "bad", :new_record => false)
+    end
+    
+    should("raise an error") { topic.save }.raises(Evoke::RecordInvalid)
+
+    should "include errors in exception message" do
+      begin
+        topic.save
+      rescue Evoke::RecordInvalid => e
+        e.message # This should be returned
+      end
+    end.equals(["mutha"])
+  end # that causes some failure
+
+  context "that does not exist" do
+    setup do
+      callback = Evoke::Callback.new("guid" => "what", :new_record => false)
+    end
+    
+    should("raise an error") { topic.save }.raises(Evoke::RecordNotFound)
+  end # that does not exist
 end # updating a callback
+
+#
+# Destroy
+#
 
 context "destroying a callback" do
   setup do
