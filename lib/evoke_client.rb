@@ -19,6 +19,12 @@ module Evoke
       callback.empty? ? nil : new(callback.merge(:new_record => false))
     end
 
+    def self.create_or_update(data)
+      callback = find(data["guid"])
+      ( callback || (callback = new(data)) ).save
+      callback
+    end
+
     def initialize(data)
       @new_record = determine_if_new_record(data.delete(:new_record))
       @data = data

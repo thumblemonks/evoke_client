@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'teststrap'
 
 context "creating a callback" do
   setup do

@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'teststrap'
 
 context "configuring evoke client" do
   context "with defaults" do
