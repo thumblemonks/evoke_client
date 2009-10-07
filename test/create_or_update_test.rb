@@ -2,33 +2,31 @@ require 'teststrap'
 
 context "create or update" do
 
-  setup do
-    @post_response = HTTParty::Response.new({"url" => "http://poster"}, "", 201, "Created")
-    @put_response = HTTParty::Response.new({"url" => "http://putter", "guid" => "putter"}, "", 200, "Ok")
-  end
-
-  context "when record does not exist" do
+  context "when callback does not exist" do
     setup do
-      Evoke::Callback.stubs(:get).with('/callbacks/poster').returns("")
-      Evoke::Callback.expects(:post).with('/callbacks', {"guid" => "poster"}).returns(@post_response)
+      Evoke::HTTMockParty.get('/callbacks/poster').ok
+      Evoke::HTTMockParty.post('/callbacks', {"guid" => "poster"}).
+        responds({"url" => "http://poster"}).created
       Evoke::Callback.create_or_update({"guid" => "poster"})
     end
 
-    should "post to callbacks" do
+    should "post to callbacks and update itself accordingly" do
       topic.url
     end.equals("http://poster")
-  end # when record does not exist
+  end # when callback does not exist
 
-  context "when record does exist" do
+  context "when callback does exist" do
     setup do
-      Evoke::Callback.stubs(:get).with('/callbacks/putter').returns(@put_response)
-      Evoke::Callback.expects(:put).with('/callbacks/putter',
-        {"url" => "http://putter", "guid" => "putter"}).returns(@put_response)
+      put_response = {"url" => "http://putter", "guid" => "putter"}
+      Evoke::HTTMockParty.get('/callbacks/putter').responds(put_response).ok
+      Evoke::HTTMockParty.put('/callbacks/putter', put_response).
+        responds({"url" => "http://putter.new"}).ok
       Evoke::Callback.create_or_update({"guid" => "putter"})
     end
-
-    should "put to callbacks when record does exist" do
+  
+    should "put to callbacks and update itself accordingly" do
       topic.url
-    end.equals("http://putter")
-  end # when record does exist
+    end.equals("http://putter.new")
+  end # when callback does exist
+
 end # create or update

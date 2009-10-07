@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name     = "evoke_client"
-  s.version  = "0.2.0"
-  s.date     = "2009-10-03"
+  s.version  = "0.2.1"
+  s.date     = "2009-10-07"
   s.summary  = "Tool for interfacing with the Evoke web service"
   s.email    = %w[gus@gusg.us]
   s.homepage = "http://github.com/thumblemonks/evoke_client"
@@ -18,13 +18,20 @@ Gem::Specification.new do |s|
   s.files = %w[
     MIT-LICENSE
     README.markdown
-    Rakefile
     evoke_client.gemspec
     lib/evoke_client.rb
+    lib/evoke_client/base.rb
+    lib/evoke_client/mock.rb
   ]
-  
+
   s.test_files = %w[
-    test/callback_test.rb
-    test/test_helper.rb
+    Rakefile
+    test/configuration_test.rb
+    test/create_or_update_test.rb
+    test/create_test.rb
+    test/destroy_test.rb
+    test/find_test.rb
+    test/teststrap.rb
+    test/update_test.rb
   ]
 end
