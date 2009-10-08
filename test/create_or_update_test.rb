@@ -4,8 +4,8 @@ context "create or update" do
 
   context "when callback does not exist" do
     setup do
-      Evoke::HTTMockParty.get('/callbacks/poster').ok
-      Evoke::HTTMockParty.post('/callbacks', {"guid" => "poster"}).
+      Evoke::HTTMockParty.get('/callbacks/poster').not_found
+      Evoke::HTTMockParty.post('/callbacks', :query => {"guid" => "poster"}).
         responds({"url" => "http://poster"}).created
       Evoke::Callback.create_or_update({"guid" => "poster"})
     end
@@ -17,11 +17,12 @@ context "create or update" do
 
   context "when callback does exist" do
     setup do
-      put_response = {"url" => "http://putter", "guid" => "putter"}
-      Evoke::HTTMockParty.get('/callbacks/putter').responds(put_response).ok
-      Evoke::HTTMockParty.put('/callbacks/putter', put_response).
+      Evoke::HTTMockParty.get('/callbacks/putter').
+        responds({"url" => "http://putter", "guid" => "putter"}).ok
+      Evoke::HTTMockParty.put('/callbacks/putter',
+          :query => {"guid" => "putter", "url" => "http://putter.back"}).
         responds({"url" => "http://putter.new"}).ok
-      Evoke::Callback.create_or_update({"guid" => "putter"})
+      Evoke::Callback.create_or_update({"guid" => "putter", "url" => "http://putter.back"})
     end
   
     should "put to callbacks and update itself accordingly" do

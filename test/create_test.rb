@@ -5,7 +5,8 @@ context "creating a callback" do
   context "with valid data" do
     setup do
       good_response = {"url" => "http://foo.bar"}
-      Evoke::HTTMockParty.post('/callbacks', {"url" => "http://good"}).responds(good_response).created
+      Evoke::HTTMockParty.post('/callbacks', :query => {"url" => "http://good"}).
+        responds(good_response).created
       callback = Evoke::Callback.new("url" => "http://good")
       callback.save
       callback
@@ -21,7 +22,7 @@ context "creating a callback" do
 
     setup do
       bad_response = {"errors" => ["blah"]}
-      Evoke::HTTMockParty.post('/callbacks', {"url" => "http://bad"}).
+      Evoke::HTTMockParty.post('/callbacks', :query => {"url" => "http://bad"}).
         responds(bad_response).unprocessable_entity
       Evoke::Callback.new("url" => "http://bad")
     end
@@ -35,7 +36,7 @@ context "creating a callback" do
   context "with some unknown error code" do
 
     setup do
-      Evoke::HTTMockParty.post('/callbacks', {"url" => "http://unknown"}).internal_server_error
+      Evoke::HTTMockParty.post('/callbacks', :query => {"url" => "http://unknown"}).internal_server_error
       Evoke::Callback.new("url" => "http://unknown")
     end
 

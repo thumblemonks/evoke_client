@@ -12,5 +12,5 @@ end
 
 desc "Open an irb session preloaded with this library"
 task :console do
-  exec "irb -rubygems -r ./lib/evoke_client.rb"
+  exec "irb -rubygems -I./lib -r evoke_client"
 end

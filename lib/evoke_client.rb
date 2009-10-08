@@ -1,5 +1,5 @@
-require 'httparty'
 require 'evoke_client/base'
+require 'httparty'
 
 Evoke::Callback.instance_eval do
   include HTTParty

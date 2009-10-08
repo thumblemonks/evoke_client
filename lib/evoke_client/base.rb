@@ -14,8 +14,8 @@ module Evoke
     end
 
     def self.create_or_update(data)
-      callback = find(data["guid"])
-      ( callback || (callback = new(data)) ).save
+      callback = (find(data["guid"]) || new(data)).update_attributes(data)
+      callback.save
       callback
     end
 
@@ -26,8 +26,13 @@ module Evoke
 
     def new_record?; @new_record; end
 
+    def update_attributes(new_data)
+      @data = @data.merge(new_data)
+      self
+    end
+
     def save
-      args = new_record? ? [:post, "/callbacks", @data] : [:put, "/callbacks/#{guid}", @data]
+      args = (new_record? ? [:post, "/callbacks"] : [:put, "/callbacks/#{guid}"]) + [{:query => @data}]
       handle_response(self.class.send(*args)) { |response| @data = response }
     end
 
