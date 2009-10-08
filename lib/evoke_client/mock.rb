@@ -36,9 +36,15 @@ module Evoke
     def self.delete(path, query={}) router("delete").maps(path, query); end
 
     class Router
-      def initialize; @routes = {}; end
-      def maps(*args) @routes[args.inspect] = Responder.new; end
-      def dispatch(*args) @routes[args.inspect].process; end
+      def initialize; @responder_routes = {}; end
+      def maps(*args) @responder_routes[args.inspect] = Responder.new; end
+      def dispatch(*args)
+        (@responder_routes[args.inspect] || NilResponder).process
+      end
+    end
+
+    class NilResponder
+      def self.process; ""; end
     end
 
     class Responder

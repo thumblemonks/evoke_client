@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name     = "evoke_client"
-  s.version  = "0.2.2"
-  s.date     = "2009-10-07"
+  s.version  = "0.2.3"
+  s.date     = "2009-10-08"
   s.summary  = "Tool for interfacing with the Evoke web service"
   s.email    = %w[gus@gusg.us]
   s.homepage = "http://github.com/thumblemonks/evoke_client"
