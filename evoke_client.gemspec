@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "evoke_client"
-  s.version  = "0.2.1"
+  s.version  = "0.2.2"
   s.date     = "2009-10-07"
   s.summary  = "Tool for interfacing with the Evoke web service"
   s.email    = %w[gus@gusg.us]
@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.markdown"]
 
   s.add_dependency("httparty", [">= 0.4.4"])
+  s.add_development_dependency("riot", [">= 0.9.6"])
 
   s.files = %w[
     MIT-LICENSE
@@ -21,11 +22,13 @@ Gem::Specification.new do |s|
     evoke_client.gemspec
     lib/evoke_client.rb
     lib/evoke_client/base.rb
+    lib/evoke_client/mash.rb
     lib/evoke_client/mock.rb
   ]
 
   s.test_files = %w[
     Rakefile
+    test/callback_test.rb
     test/configuration_test.rb
     test/create_or_update_test.rb
     test/create_test.rb

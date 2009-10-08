@@ -1,17 +1,5 @@
 require 'teststrap'
 
-context "updating attributes of a callback" do
-  setup do
-    callback = Evoke::Callback.new("guid" => "meme", "url" => "http://foo.bar", "http_method" => "get")
-    callback.update_attributes("guid" => "mom", "url" => "http://a.b")
-    callback
-  end
-
-  asserts("guid updated") { topic.guid }.equals("mom")
-  asserts("url updated") { topic.url }.equals("http://a.b")
-  asserts("http_method is unchanged") { topic.http_method }.equals("get")
-end # updating attributes of a callback
-
 context "updating a callback" do
 
   context "that actually exists" do

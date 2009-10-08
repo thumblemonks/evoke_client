@@ -1,3 +1,5 @@
+require 'evoke_client/mash'
+
 module Evoke
   class RecordError < Exception; end
   class RecordInvalid < RecordError; end
@@ -14,6 +16,7 @@ module Evoke
     end
 
     def self.create_or_update(data)
+      data = Callback.stringify_keys(data)
       callback = (find(data["guid"]) || new(data)).update_attributes(data)
       callback.save
       callback
@@ -21,13 +24,13 @@ module Evoke
 
     def initialize(data)
       @new_record = determine_if_new_record(data.delete(:new_record))
-      @data = data
+      @data = Callback.stringify_keys(data)
     end
 
     def new_record?; @new_record; end
 
     def update_attributes(new_data)
-      @data = @data.merge(new_data)
+      @data = @data.merge(Callback.stringify_keys(new_data))
       self
     end
 
@@ -55,6 +58,10 @@ module Evoke
     
     def determine_if_new_record(condition)
       condition.nil? || condition
+    end
+    
+    def self.stringify_keys(hash)
+      hash.mash { |k,v| {k.to_s => v} }
     end
   end # Callback
 end # Evoke

@@ -7,7 +7,7 @@ context "create or update" do
       Evoke::HTTMockParty.get('/callbacks/poster').not_found
       Evoke::HTTMockParty.post('/callbacks', :query => {"guid" => "poster"}).
         responds({"url" => "http://poster"}).created
-      Evoke::Callback.create_or_update({"guid" => "poster"})
+      Evoke::Callback.create_or_update({:guid => "poster"})
     end
 
     should "post to callbacks and update itself accordingly" do
